@@ -65,10 +65,35 @@ keeper is **the regime read, not a trade**: it tells the equity sleeves when the
 so sizing stops assuming a permanent negative correlation. Natural partner to
 [Bleed](https://github.com/blaquebaux/bleed) and the keeper book's regime brake.
 
+## Live driver — built (paper/dry-run)
+
+The research keeper — *the regime read* — is now a governed driver on the engine
+([`live/bonds_live.jl`](live/bonds_live.jl)). Each run it:
+
+1. **Publishes the regime read** to `~/.config/blaquebaux/bonds_regime.txt` (the 63-day SPY–IEF
+   correlation, the neg/pos regime, and `hedge_on`) — the sleeve's real product, a sizing input the
+   equity sleeves consume so they stop assuming a permanent negative correlation.
+2. **Trades the overlay book** — 60% SPY + 40% hedge, where the hedge is **IEF when the correlation is
+   negative** (hedge live) and **SHY (~cash) when positive** (hedge dead) — through the same Layer-3
+   safety gate, ledger, reconcile, kill switch, and HWM as the spine.
+
+```bash
+BB_DRYRUN=1 bash live/run_bonds_daily.sh          # compute + publish the regime, place nothing
+julia --project=engine live/bonds_validation.jl   # the overlay-appropriate bar
+```
+
+**Validation — PASS (as an overlay):** the honest bar for a defensive overlay is drawdown-reduction,
+not a Sharpe bar equity beta wins by default. Causal walk-forward, net of cost: the driver **cuts the
+equity drawdown 28%** (−22% → −16%), **retains 59% of the return** (14.8% → 8.7%), at **10.5% vol vs
+17%**. Regime-*timing* adds ≈0 vs static 60/40 (−0.4%/yr) — exactly as research #4 found: the
+diversification is the value, not the timing. So it graduates as a **governed defensive overlay +
+regime-signal emitter, not a standalone-alpha keeper** — dry-run by default, paper once
+`~/.config/blaquebaux/alpaca_bonds.env` exists, real money gated behind an explicit confirm.
+
 ## Status
-**Research: first pass complete** (`research/`). A macro-overlay / risk sleeve — the
-correlation-regime read is the keeper; credit-as-lead, duration-alpha, and overlay-timing are honest
-nulls. No live driver; nothing validated to the spine's bar.
+**Research complete + live driver built — validation PASS (as an overlay), stays on the paper/dry-run
+path.** The correlation-regime read is the keeper (now published for the family to size against);
+credit-as-lead, duration-alpha, and overlay-timing are honest nulls. Not a live-money endorsement.
 
 ## About Blaque Baux
 
@@ -91,7 +116,7 @@ base/blueprint and holds the [full family roster](https://github.com/blaquebaux/
 ```
 engine/     the Blaque Baux platform (git submodule -> blaquebaux/base)
 research/   four Path-A sketches (correlation regime, credit lead/lag, curve, overlay) + scorecard
-live/       governed live drivers (once a sleeve graduates to paper A/B)
+live/       bonds_live.jl (overlay + regime emitter) + bonds_validation.jl + run wrapper
 ```
 
 ## License
