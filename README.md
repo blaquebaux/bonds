@@ -83,12 +83,14 @@ julia --project=engine live/bonds_validation.jl   # the overlay-appropriate bar
 ```
 
 **Validation — PASS (as an overlay):** the honest bar for a defensive overlay is drawdown-reduction,
-not a Sharpe bar equity beta wins by default. Causal walk-forward, net of cost: the driver **cuts the
-equity drawdown 28%** (−22% → −16%), **retains 59% of the return** (14.8% → 8.7%), at **10.5% vol vs
-17%**. Regime-*timing* adds ≈0 vs static 60/40 (−0.4%/yr) — exactly as research #4 found: the
-diversification is the value, not the timing. So it graduates as a **governed defensive overlay +
-regime-signal emitter, not a standalone-alpha keeper** — dry-run by default, paper once
-`~/.config/blaquebaux/alpaca_bonds.env` exists, real money gated behind an explicit confirm.
+not a Sharpe bar equity beta wins by default. Causal walk-forward, net of cost, full **2016–2026 SIP
+history**: the driver **cuts the equity drawdown 41%** (−34% → −20%), **retains 61% of the return**
+(14.8% → 9.1%), at **11.0% vol vs 18.7%**. Regime-*timing* adds ≈0 vs static 60/40 (−0.5%/yr) — exactly
+as research #4 found: the diversification is the value, not the timing. (This is the one overlay result
+that gets *stronger* on the full cycle — because it's the direct hedge-vs-cash comparison across the
+2020 and 2022 crashes, not a de-risk of an already-diversified equity book.) So it graduates as a
+**governed defensive overlay + regime-signal emitter, not a standalone-alpha keeper** — dry-run by
+default, paper once `~/.config/blaquebaux/alpaca_bonds.env` exists, real money gated behind an explicit confirm.
 
 ## Status
 **Research complete + live driver built — validation PASS (as an overlay), stays on the paper/dry-run
