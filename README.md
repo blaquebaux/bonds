@@ -31,7 +31,7 @@ and when widening credit is warning of an equity drawdown before price does. It 
 to [Bleed](https://github.com/blaquebaux/bleed) (tail insurance) and the sizing logic in the keeper
 book.
 
-## Research plan (Path A — not yet built)
+## Research plan (Path A)
 
 - **The correlation regime.** Estimate the time-varying stock–bond correlation and identify the
   regimes (bond-as-hedge vs. bond-as-co-mover). Test whether the regime is *detectable in advance*
@@ -44,11 +44,31 @@ book.
   book's* risk-adjusted return, or is it just another thing to whipsaw on? A null overlay is still a
   useful risk read.
 
-Nothing above is implemented or validated. This is the map, not the territory.
+## Research — first pass done
+
+Full detail in [`research/README.md`](research/README.md). The scorecard (Alpaca SIP, 2016–2026):
+
+| # | Question | Verdict |
+|---|----------|---------|
+| 1 | Is the stock-bond correlation regime real & knowable ahead? | ✅ **flagship** — corr swings −0.68→+0.67, sign **72% persistent** a quarter out; the hedge works in neg-corr (+0.21% on worst equity days), fails in pos-corr (−0.01%) |
+| 2 | Do credit spreads *lead* equities? | ❌ null — **coincident**, not leading (cross-corr peaks at k≤0) |
+| 3 | Where on the curve is the room for growth? | ⚠️ thin — **duration barely paid** in a hike era; TLT +0.01 Sharpe on −48% DD; duration budgeting, not alpha |
+| 4 | Does a regime overlay beat static 60/40? | ➖ near-null — timing adds **+0.02** Sharpe; the *diversification* is the value (both halve crisis loss) |
+
+**The synthesis:** Bonds is a **risk/overlay sleeve, exactly as designed** — a guardrail, not a
+money-maker. The one non-obvious keeper is #1: the stock–bond correlation swings sign and is
+**detectable a quarter ahead**, and the bond hedge only works in the negative-correlation regime. So
+the "bonds diversify stocks" assumption in every 60/40 is regime-conditional, and the regime is
+legible in advance. Everything else is honest deflation — credit doesn't lead (it confirms),
+duration barely paid this decade, and *timing* the overlay barely beats simply *holding* it. The
+keeper is **the regime read, not a trade**: it tells the equity sleeves when the bond hedge is live,
+so sizing stops assuming a permanent negative correlation. Natural partner to
+[Bleed](https://github.com/blaquebaux/bleed) and the keeper book's regime brake.
 
 ## Status
-**Concept.** Thesis and research plan only — no sketches run, no driver, nothing validated to the
-spine's bar. A macro-relationship study meant to inform sizing and hedging, not to trade in isolation.
+**Research: first pass complete** (`research/`). A macro-overlay / risk sleeve — the
+correlation-regime read is the keeper; credit-as-lead, duration-alpha, and overlay-timing are honest
+nulls. No live driver; nothing validated to the spine's bar.
 
 ## About Blaque Baux
 
@@ -70,7 +90,7 @@ base/blueprint and holds the [full family roster](https://github.com/blaquebaux/
 ## Layout
 ```
 engine/     the Blaque Baux platform (git submodule -> blaquebaux/base)
-research/   the research plan (Path A) — sketches land here once run
+research/   four Path-A sketches (correlation regime, credit lead/lag, curve, overlay) + scorecard
 live/       governed live drivers (once a sleeve graduates to paper A/B)
 ```
 
